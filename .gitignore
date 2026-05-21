@@ -1,0 +1,9 @@
+# Compiled binaries
+server
+*.dSYM/
+
+# Local databases/data files
+*.dat
+
+# Log files
+*.log
