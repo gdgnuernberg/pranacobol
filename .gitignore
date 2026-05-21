@@ -43,3 +43,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Compiled binaries
+server
+*.dSYM/
+
+# Local databases/data files
+*.dat
