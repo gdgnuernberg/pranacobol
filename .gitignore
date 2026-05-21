@@ -44,9 +44,22 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Compiled binaries
+# Compiled binaries and build artifacts
 server
 *.dSYM/
+*.o
+*.obj
+*.so
+*.dylib
+*.dll
+*.exe
+*.a
+*.la
+*.lo
 
 # Local databases/data files
 *.dat
+
+# macOS system files
+.DS_Store
+._*
