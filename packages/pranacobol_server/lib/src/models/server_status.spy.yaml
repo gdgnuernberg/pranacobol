@@ -1,0 +1,7 @@
+class: ServerStatus
+fields:
+  status: String
+  uptimeSeconds: int
+  requestCount: int
+  lockStatus: String
+  systemTime: String

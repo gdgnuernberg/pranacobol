@@ -1,0 +1,6 @@
+class: SessionRecord
+fields:
+  time: String
+  method: String
+  duration: int
+  notes: String

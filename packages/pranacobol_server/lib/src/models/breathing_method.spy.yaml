@@ -1,0 +1,9 @@
+class: BreathingMethod
+fields:
+  id: String
+  name: String
+  inhale: int
+  hold: int
+  exhale: int
+  holdOut: int
+  desc: String

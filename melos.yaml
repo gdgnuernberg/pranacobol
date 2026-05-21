@@ -1,0 +1,17 @@
+name: pranacobol_monorepo
+
+packages:
+  - packages/*
+
+scripts:
+  analyze:
+    run: melos exec -- "flutter analyze"
+    description: Run flutter analyze on all packages.
+    
+  get:
+    run: melos exec -- "flutter pub get"
+    description: Run pub get on all packages.
+    
+  generate:
+    run: melos exec --dir-exists="lib/src/generated" -- "dart pub run serverpod_cli generate"
+    description: Generate Serverpod code.

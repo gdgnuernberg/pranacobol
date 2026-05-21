@@ -1,0 +1,10 @@
+lock:
+  - toggleLock:
+methods:
+  - getMethods:
+sessions:
+  - getSessions:
+  - addSession:
+  - resetSessions:
+status:
+  - getStatus:
