@@ -197,6 +197,9 @@
            END-IF.
 
        ROUTE-REQUEST.
+           IF REQ-METHOD = "OPTIONS"
+               PERFORM SERVE-OPTIONS
+           ELSE
            IF REQ-METHOD = "GET" AND FUNCTION TRIM(REQ-PATH) = "/"
                PERFORM SERVE-DASHBOARD
            ELSE
@@ -279,7 +282,8 @@
                   '{"id":"box","name":"Box Breathing","inhale":4,"hold":4,"exhale":4,"holdOut":4,"desc":"Relieves stress, calms the nervous system."},'
                   '{"id":"sleep","name":"4-7-8 Method","inhale":4,"hold":7,"exhale":8,"holdOut":0,"desc":"Deep relaxation, helps with falling asleep."},'
                   '{"id":"resonant","name":"Resonant Coherence","inhale":5,"hold":0,"exhale":5,"holdOut":0,"desc":"Balances autonomic nervous system."},'
-                  '{"id":"energy","name":"Energizing Breath","inhale":2,"hold":0,"exhale":2,"holdOut":10,"desc":"Rapid cycles followed by retention for energy."}'
+                  '{"id":"energy","name":"Energizing Breath","inhale":2,"hold":0,"exhale":2,"holdOut":10,"desc":"Rapid cycles followed by retention for energy."},'
+                  '{"id":"wimhof","name":"Wim Hof Method","inhale":2,"hold":0,"exhale":2,"holdOut":60,"desc":"Hyperventilation cycles followed by deep breath retention."}'
                   "]" X"00" DELIMITED BY SIZE INTO RESP-BUFFER
            END-STRING
            
@@ -314,7 +318,7 @@
                   X"0D0A"
                   "{"
                   '"status":"online",'
-                  '"uptime_seconds\":"' FUNCTION TRIM(UPTIME-DISP) '",'
+                  '"uptime_seconds":"' FUNCTION TRIM(UPTIME-DISP) '",'
                   '"request_count":' FUNCTION TRIM(REQ-COUNT-DISP) ','
                   '"lock_status":"' FUNCTION TRIM(SYS-STATE) '",'
                   '"system_time":"' CURR-TIME-DISP '"'
@@ -384,7 +388,7 @@
                 DISPLAY "Error opening sessions.dat for reading. Status: " SESSIONS-STATUS
             END-IF
            
-           STRING "]" X"00" DELIMITED BY SIZE INTO JSON-ARRAY WITH POINTER JSON-POINTER
+           STRING "]" DELIMITED BY SIZE INTO JSON-ARRAY WITH POINTER JSON-POINTER
            
            INITIALIZE RESP-BUFFER
            STRING "HTTP/1.1 200 OK" X"0D0A"
@@ -556,6 +560,22 @@
            CALL "client_write" USING BY VALUE CLIENT-FD
                                      BY REFERENCE RESP-BUFFER
                                      BY VALUE RESP-LEN.
+
+        SERVE-OPTIONS.
+            INITIALIZE RESP-BUFFER
+            STRING "HTTP/1.1 200 OK" X"0D0A"
+                   "Access-Control-Allow-Origin: *" X"0D0A"
+                   "Access-Control-Allow-Methods: GET, POST, OPTIONS" X"0D0A"
+                   "Access-Control-Allow-Headers: Content-Type" X"0D0A"
+                   "Connection: close" X"0D0A"
+                   X"0D0A" X"00"
+                   DELIMITED BY SIZE INTO RESP-BUFFER
+            END-STRING
+            
+            CALL "strlen" USING BY REFERENCE RESP-BUFFER RETURNING RESP-LEN
+            CALL "client_write" USING BY VALUE CLIENT-FD
+                                      BY REFERENCE RESP-BUFFER
+                                      BY VALUE RESP-LEN.
 
        SERVE-404.
            INITIALIZE RESP-BUFFER
