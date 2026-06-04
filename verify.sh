@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# verify.sh - Automated tests for GnuCOBOL Breathwork Server
+# verify.sh - Automated tests for Serverpod Breathwork Server
 PORT=8080
 SERVER_PID=""
 
@@ -13,29 +13,25 @@ echo "========================================"
 echo " Starting Automated API Verification"
 echo "========================================"
 
-# Step 1: Compile
-echo "Compiling server..."
-make clean
-make
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Compilation failed!${NC}"
-    exit 1
-fi
-echo -e "${GREEN}Compilation successful.${NC}"
-
 # Terminate any existing server processes
-pkill -f "./server" || true
+pkill -f "pranacobol_server/bin/main.dart" || true
 
 # Ensure database is fresh for testing
-make clean-db
+rm -f lock.dat sessions.dat
 
 # Step 2: Start server in background
-echo "Starting COBOL server on port $PORT..."
-./server > server_test.log 2>&1 &
+echo "Starting Serverpod server on port $PORT..."
+dart packages/pranacobol_server/bin/main.dart > server_test.log 2>&1 &
 SERVER_PID=$!
 
 # Wait for server to bind
-sleep 2
+echo "Waiting for server to start..."
+for i in {1..15}; do
+    if curl -s http://localhost:$PORT/api/status > /dev/null; then
+        break
+    fi
+    sleep 0.5
+done
 
 # Check if server is running
 if ! ps -p $SERVER_PID > /dev/null; then
@@ -75,7 +71,7 @@ assert_contains() {
 
 cleanup() {
     if [ -n "$SERVER_PID" ]; then
-        echo "Stopping COBOL server (PID $SERVER_PID)..."
+        echo "Stopping Serverpod server (PID $SERVER_PID)..."
         kill $SERVER_PID
         wait $SERVER_PID 2>/dev/null
     fi
@@ -132,3 +128,4 @@ echo "========================================"
 echo -e "${GREEN} All tests passed successfully!${NC}"
 echo "========================================"
 exit 0
+

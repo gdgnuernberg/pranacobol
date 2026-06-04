@@ -1,0 +1,6 @@
+class: LockResponse
+fields:
+  success: bool
+  state: String
+  error: String?
+

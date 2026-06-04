@@ -1,0 +1,4 @@
+class: SessionsResponse
+fields:
+  locked: bool
+  sessions: List<SessionRecord>
